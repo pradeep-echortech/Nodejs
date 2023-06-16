@@ -1,0 +1,14 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "travels",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "meher pradeep",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
