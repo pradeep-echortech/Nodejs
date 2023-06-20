@@ -23,3 +23,30 @@ const tours = JSON.parse(
 );
 
 // Import Data from DB
+const importData = async () => {
+  try {
+    await Tour.create(tours);
+    console.log('Data successfully Loaded!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit()
+};
+
+// Delete Data from DB
+const deleteData = async () => {
+  try {
+    await Tour.deleteMany();
+    console.log('Data successfully Deleted!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
+if (process.argv[2] === '--import') {
+  importData();
+} else if (process.argv[2] === '--delete') {
+  deleteData();
+}
+
