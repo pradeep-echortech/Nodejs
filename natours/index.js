@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose');
 
-dotenv.config({ path: './config.env' });
+dotenv.config();
 
 const app = require('./app');
 
@@ -18,6 +18,10 @@ mongoose
   })
   .then(() => console.log('DB connection successful'));
 
+const port = 5000;
+app.listen(port, () => {
+  console.log(`App running on port ${port}`);
+});
 
 // const testTour = new Tour({
 //   name: 'The Park Camper',
@@ -28,8 +32,3 @@ mongoose
 //   .save()
 //   .then((doc) => console.log(doc))
 //   .catch((err) => console.log('Error:', err));
-
-const port = 5000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}`);
-});

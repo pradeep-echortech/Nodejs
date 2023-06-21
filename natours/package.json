@@ -4,8 +4,9 @@
   "description": "travels",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "SET NODE_ENV=production nodemon server.js"
+    "start": "nodemon index.js",
+    "dev": "SET NODE_ENV=production nodemon index.js",
+    "debug":"ndb index.js"
   },
   "author": "meher pradeep",
   "license": "ISC",
