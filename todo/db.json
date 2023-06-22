@@ -1,0 +1,32 @@
+[
+    {
+        "content": "complete the task",
+        "editing": false,
+        "checked": false
+    },
+    {
+        "content": "complete the task 2",
+        "editing": false,
+        "checked": false
+    },
+    {
+        "content": "complete the task 3",
+        "editing": false,
+        "checked": false
+    },
+    {
+        "content": "new",
+        "editing": false,
+        "checked": false
+    },
+    {
+        "content": "new task",
+        "editing": false,
+        "checked": false
+    },
+    {
+        "content": "New task 2",
+        "editing": false,
+        "checked": false
+    }
+]
