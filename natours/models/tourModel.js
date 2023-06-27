@@ -2,6 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const User = require('./userModel')
 
 const tourSchema = new mongoose.Schema(
   {
@@ -25,13 +26,14 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
-      enum: ['easy', 'medium', 'difficult']
+      enum: ['easy', 'medium', 'difficult'],
     },
     ratingAverage: {
       type: Number,
       default: 4.5,
       min: [1, 'The rating should be above 1.0'],
       max: [5, 'The rating should be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10,
     },
     ratingQuantity: {
       type: Number,
@@ -65,30 +67,36 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    startLocation:{
+    startLocation: {
       //GeoJSON
-      type:{
-        type:String,
-        default:'Point',
-        enum:['Point']
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
       },
-      coordinates:[Number],
-      address:String,
-      description:String
+      coordinates: [Number],
+      address: String,
+      description: String,
     },
-    locations:[
+    locations: [
       {
-        type:{
-          type:String,
-          default:'Point',
-          enum:['Point']
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
         },
-        coordinates:[Number],
-        address:String,
-        description:String,
-        day:Number
-      }
-    ]
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -96,8 +104,17 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1, ratingAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // Document Middleware
@@ -106,9 +123,11 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-// tourSchema.post('save',function(doc, next){
-//   console.log(doc)
-//   next();
+// Embedded modelling
+// tourSchema.pre('save',async function(next){
+//   const guidePromises = this.guides.map(async id => await User.findById(id))
+//   this.guides = await Promise.all(guidePromises)
+//   next()
 // })
 
 // Query Middleware
@@ -116,6 +135,14 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 
