@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+const path = require('path')
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet')
@@ -10,12 +11,17 @@ const xss = require('xss-clean')
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes')
+const viewRouter = require('./routes/viewRoutes')
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
 
 const app = express();
 
+app.set('view engine','pug')
+app.set('views',path.join(__dirname,'views'))
+
 // 1.Global middlewares
+app.use(express.static(path.join(__dirname,'public')));
 
 app.use(helmet())
 
@@ -49,13 +55,14 @@ app.use(hpp({
   ]
 }))
 
-app.use(express.static('./public'));
 app.use((req, res, next) => {
   console.log('Hello from the middleware');
   next();
 });
 
 // Router mounting
+
+app.use('/',viewRouter)
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
