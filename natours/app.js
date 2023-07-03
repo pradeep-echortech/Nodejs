@@ -2,16 +2,18 @@
 const path = require('path')
 const express = require('express');
 const morgan = require('morgan');
-const helmet = require('helmet')
+// const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
 const hpp = require('hpp')
 // const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const cookieParser = require('cookie-parser')
+const compression = require('compression')
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes')
+const bookingRouter = require('./routes/bookingRoutes')
 const viewRouter = require('./routes/viewRoutes')
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
@@ -24,7 +26,15 @@ app.set('views',path.join(__dirname,'views'))
 // 1.Global middlewares
 app.use(express.static(path.join(__dirname,'public')));
 
-app.use(helmet())
+// app.use(helmet())
+
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+//     'script-src': ["self", 'js.stripe.com'],
+//     'frame-src': ["self", 'js.stripe.com'],
+//   },
+// }))
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -57,6 +67,8 @@ app.use(hpp({
   ]
 }))
 
+app.use(compression())
+
 app.use((req, res, next) => {
   console.log('Hello from the middleware');
   // console.log(req.cookies)
@@ -69,6 +81,7 @@ app.use('/',viewRouter)
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} in the server`,404));

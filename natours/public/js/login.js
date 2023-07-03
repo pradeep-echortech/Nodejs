@@ -51,7 +51,7 @@ const logout = async () => {
 //       headers: {
 //         'Content-Type': 'application/json',
 //       },
-//       body: JSON.stringify({
+//       body:
 //         data
 //       }),
 //     });
@@ -100,6 +100,13 @@ const updatePassword = async (passwordCurrent,password,passwordConfirm)=>{
   }
 }
 
+
+
+
+
+//
+// implementing
+
 const loginForm = document.getElementById('login');
 if (loginForm) {
   loginForm.addEventListener('click', (e) => {
@@ -121,9 +128,7 @@ if (userDataForm) {
     form.append('name',document.getElementById('name').value)
     form.append('email',document.getElementById('email').value)
     form.append('photo',document.getElementById('photo').files[0])
-    updateData(form);
-    console.log(form)
-    
+    updateData(form);    
   });
 }
 
@@ -144,3 +149,4 @@ if(userPasswordForm){
     document.getElementById('password-confirm').value = ''
   })
 }
+
